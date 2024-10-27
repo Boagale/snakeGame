@@ -5,7 +5,7 @@ let pause = true;
 let score = 0;
 let direction = "RIGHT";
 let ballDrawn = false;
-let ballPosition = [200, 200];
+let snakeTargetPosition = [200, 200];
 let gameOver = false;
 let snakeBody = [
   [105, 250],
@@ -45,23 +45,65 @@ function snakePositionControler(sign, axis) {
   }
 }
 
+function checkSnakeTarget() {
+    if (
+      Math.abs(snakeTargetPosition[0] - snakeBody[snakeBody.length - 1][0]) < 7 &&
+      Math.abs(snakeTargetPosition[1] - snakeBody[snakeBody.length - 1][1]) < 7
+    ) {
+      score++;
+      snakeTargetPosition = [
+        10 + Math.floor(Math.random() * 580),
+        10 + Math.floor(Math.random() * 380),
+      ];
+      drawBall();
+      return true;
+    }
+    return false;
+  }
+
 function snakeMoveControler() {
   switch (direction) {
     case "UP":
-      snakeBody.shift();
-      snakePositionControler("-", "y");
+      if (checkWall() === "play") {
+        if (checkSnakeTarget()) {
+          snakePositionControler("-", "y");
+          snakePositionControler("-", "y");
+        }
+        snakeBody.shift();
+        snakePositionControler("-", "y");
+      } else alert(`Game Over score ${score}`);
       break;
     case "DOWN":
-      snakeBody.shift();
-      snakePositionControler("+", "y");
+      if (checkWall() === "play") {
+        if (checkSnakeTarget()) {
+          snakePositionControler("+", "y");
+          snakePositionControler("+", "y");
+        }
+        snakeBody.shift();
+        snakePositionControler("+", "y");
+      } else alert(`Game Over score ${score}`);
       break;
     case "RIGHT":
-      snakeBody.shift();
-      snakePositionControler("+", "x");
+      if (checkWall() === "play") {
+        if (checkSnakeTarget()) {
+          snakePositionControler("+", "x");
+          snakePositionControler("+", "x");
+        }
+
+        snakeBody.shift();
+        snakePositionControler("+", "x");
+      } else alert(`Game Over score ${score}`);
       break;
     case "LEFT":
-      snakeBody.shift();
-      snakePositionControler("-", "x");
+      if (checkWall() === "play") {
+        if (checkSnakeTarget()) {
+          snakePositionControler("-", "x");
+          snakePositionControler("-", "x");
+        }
+        snakeBody.shift();
+        snakePositionControler("-", "x");
+        snakeBody.shift();
+      } else alert(`Game Over score ${score}`);
       break;
   }
 }
