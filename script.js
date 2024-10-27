@@ -18,10 +18,57 @@ canvas.width = 600;
 canvas.height = 400;
 canvas.style.border = "2px solid gray";
 canvas.style.background = "brown";
+function snakePositionControler(sign, axis) {
+  if (sign === "+" && axis === "x") {
+    snakeBody.push([
+      snakeBody[snakeBody.length - 1][0] + 5,
+      snakeBody[snakeBody.length - 1][1],
+    ]);
+  }
+  if (sign === "-" && axis === "x") {
+    snakeBody.push([
+      snakeBody[snakeBody.length - 1][0] - 5,
+      snakeBody[snakeBody.length - 1][1],
+    ]);
+  }
+  if (sign === "+" && axis === "y") {
+    snakeBody.push([
+      snakeBody[snakeBody.length - 1][0],
+      snakeBody[snakeBody.length - 1][1] + 5,
+    ]);
+  }
+  if (sign === "-" && axis === "y") {
+    snakeBody.push([
+      snakeBody[snakeBody.length - 1][0],
+      snakeBody[snakeBody.length - 1][1] - 5,
+    ]);
+  }
+}
+
+function snakeMoveControler() {
+  switch (direction) {
+    case "UP":
+      snakeBody.shift();
+      snakePositionControler("-", "y");
+      break;
+    case "DOWN":
+      snakeBody.shift();
+      snakePositionControler("+", "y");
+      break;
+    case "RIGHT":
+      snakeBody.shift();
+      snakePositionControler("+", "x");
+      break;
+    case "LEFT":
+      snakeBody.shift();
+      snakePositionControler("-", "x");
+      break;
+  }
+}
 
 setInterval(() => {
   if (!pause) {
-    //   snakeMoveControler();
+    snakeMoveControler();
     ctx.clearRect(0, 0, 600, 400);
 
     // DRAW SNAKE BODY
