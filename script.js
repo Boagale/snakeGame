@@ -6,7 +6,9 @@ let score = 0;
 let direction = "RIGHT";
 let ballDrawn = false;
 let snakeTargetPosition = [200, 200];
-let gameOver = false;
+let re = false;
+let prescore = 0;
+let message = "";
 let snakeBody = [
   [105, 250],
   [110, 250],
@@ -18,6 +20,39 @@ canvas.width = 600;
 canvas.height = 400;
 canvas.style.border = "2px solid gray";
 canvas.style.background = "brown";
+
+function drawSnakeTarget() {
+  ctx.fillStyle = "#e3e3e3";
+  ctx.beginPath();
+  ctx.arc(
+    snakeTargetPosition[0],
+    snakeTargetPosition[1],
+    5,
+    0,
+    2 * Math.PI,
+    false
+  );
+  ctx.fill();
+}
+
+function drawScoreText() {
+  ctx.font = "32px Courier new";
+  ctx.fillText(score, 250, 20);
+}
+
+function gameReset() {
+  snakeBody = [
+    [105, 250],
+    [110, 250],
+    [115, 250],
+    [120, 250],
+  ];
+  direction = "RIGHT";
+  prescore = score;
+  score = 0;
+  pause = true;
+}
+
 function snakePositionControler(sign, axis) {
   if (sign === "+" && axis === "x") {
     snakeBody.push([
@@ -46,21 +81,32 @@ function snakePositionControler(sign, axis) {
 }
 
 function checkSnakeTarget() {
-    if (
-      Math.abs(snakeTargetPosition[0] - snakeBody[snakeBody.length - 1][0]) < 7 &&
-      Math.abs(snakeTargetPosition[1] - snakeBody[snakeBody.length - 1][1]) < 7
-    ) {
-      score++;
-      snakeTargetPosition = [
-        10 + Math.floor(Math.random() * 580),
-        10 + Math.floor(Math.random() * 380),
-      ];
-      drawBall();
-      return true;
-    }
-    return false;
+  if (
+    Math.abs(snakeTargetPosition[0] - snakeBody[snakeBody.length - 1][0]) < 7 &&
+    Math.abs(snakeTargetPosition[1] - snakeBody[snakeBody.length - 1][1]) < 7
+  ) {
+    score = score +1;
+    snakeTargetPosition = [
+      10 + Math.floor(Math.random() * 580),
+      10 + Math.floor(Math.random() * 380),
+    ];
+    drawSnakeTarget();
+    return true;
   }
-
+  return false;
+}
+function checkWall() {
+  if (
+    snakeBody[snakeBody.length - 1][0] - 600 >= 0 ||
+    snakeBody[snakeBody.length - 1][0] <= 0 ||
+    snakeBody[snakeBody.length - 1][1] - 400 >= 0 ||
+    snakeBody[snakeBody.length - 1][1] <= 0
+  ) {
+    gameReset();
+    return;
+  }
+  return "play";
+}
 function snakeMoveControler() {
   switch (direction) {
     case "UP":
@@ -71,7 +117,9 @@ function snakeMoveControler() {
         }
         snakeBody.shift();
         snakePositionControler("-", "y");
-      } else alert(`Game Over score ${score}`);
+      } else {
+        re = true;
+      }
       break;
     case "DOWN":
       if (checkWall() === "play") {
@@ -81,7 +129,10 @@ function snakeMoveControler() {
         }
         snakeBody.shift();
         snakePositionControler("+", "y");
-      } else alert(`Game Over score ${score}`);
+      } else {
+        re = true;
+        message = `Game over with score ${score} play again?`;
+      }
       break;
     case "RIGHT":
       if (checkWall() === "play") {
@@ -92,7 +143,10 @@ function snakeMoveControler() {
 
         snakeBody.shift();
         snakePositionControler("+", "x");
-      } else alert(`Game Over score ${score}`);
+      } else {
+        re = true;
+        message = `Game over with score ${score} play again?`;
+      }
       break;
     case "LEFT":
       if (checkWall() === "play") {
@@ -102,8 +156,10 @@ function snakeMoveControler() {
         }
         snakeBody.shift();
         snakePositionControler("-", "x");
-        snakeBody.shift();
-      } else alert(`Game Over score ${score}`);
+      } else {
+        re = true;
+        message = `Game over with score ${score} play again?`;
+      }
       break;
   }
 }
@@ -116,13 +172,13 @@ setInterval(() => {
     // DRAW SNAKE BODY
     snakeBody.forEach((box) => ctx.fillRect(box[0], box[1], 5, 5));
 
-    //   drawSnakeTarget();
+    drawSnakeTarget();
 
-    //   drawScoreText();
+      drawScoreText();
   } else {
     ctx.fillStyle = "#fff";
     ctx.font = "24px Courier new";
-    ctx.fillText("Press space button to play?", 50, 200);
+    ctx.fillText(re?`Game over with score ${prescore} play again?`:"Press space button to play?", 50, 200);
   }
 }, 50);
 
