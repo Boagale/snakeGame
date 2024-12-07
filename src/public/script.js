@@ -36,8 +36,8 @@ function drawSnakeTarget() {
 }
 
 function drawScoreText() {
-  ctx.font = "32px Courier new";
-  ctx.fillText(score, 250, 20);
+  ctx.font = "32px monospace";
+  ctx.fillText(score, canvas.width - 40, 20);
 }
 
 function gameReset() {
@@ -177,7 +177,7 @@ setInterval(() => {
       drawScoreText();
   } else {
     ctx.fillStyle = "#fff";
-    ctx.font = "24px Courier new";
+    ctx.font = "24px monospace";
     ctx.fillText(re?`Game over with score ${prescore} play again?`:"Press space button to play?", 50, 200);
   }
 }, 50);
